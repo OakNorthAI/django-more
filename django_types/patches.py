@@ -49,11 +49,8 @@ class RelatedField(models.Field):
                 dep_app_label = "__setting__"
                 dep_object_name = swappable_setting
             else:
-                if isinstance(self.remote.model, str) or not hasattr(self.remote_field.model, '_meta'):
-                    dep_app_label, dep_object_name = self.deconstruct()[-1]['to'].split('.')
-                else:
-                    dep_app_label = self.remote_field.model._meta.app_label
-                    dep_object_name = self.remote_field.model._meta.object_name
+                dep_app_label = self.related_model._meta.app_label
+                dep_object_name = self.related_model._meta.object_name
             # Depend on the model that this refers to
             dependencies.append(dependency_tuple(
                 app_label=dep_app_label,
