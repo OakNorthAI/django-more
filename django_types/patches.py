@@ -49,8 +49,11 @@ class RelatedField(models.Field):
                 dep_app_label = "__setting__"
                 dep_object_name = swappable_setting
             else:
-                dep_app_label = self.related_model._meta.app_label
-                dep_object_name = self.related_model._meta.object_name
+                try:
+                    dep_app_label = self.related_model._meta.app_label
+                    dep_object_name = self.related_model._meta.object_name
+                except AttributeError:
+                    dep_app_label, dep_object_name = self.deconstruct()[-1]['to'].split('.')
             # Depend on the model that this refers to
             dependencies.append(dependency_tuple(
                 app_label=dep_app_label,
