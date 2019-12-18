@@ -69,7 +69,7 @@ class EnumField(CustomTypeField):
             kwargs['case_sensitive'] = self.case_sensitive
         return name, path, args, kwargs
 
-    def from_db_value(self, value, expression, connection, context):
+    def from_db_value(self, value, *args):
         if value is None:
             return None
         with suppress(KeyError):
