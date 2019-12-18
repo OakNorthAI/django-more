@@ -5,7 +5,6 @@ from operator import attrgetter
 from django.db import models
 from django.db.models import sql
 from django.db.models.deletion import Collector
-from django.utils import six
 
 from django_types.operations import CustomTypeOperation
 from .fields import EnumField
@@ -62,19 +61,19 @@ class SQLCollector(Collector):
             query_list.append(qs.query.clone(klass=sql.DeleteQuery).get_compiler(self.using).as_sql())
 
         # update fields
-        for model, instances_for_fieldvalues in six.iteritems(self.field_updates):
+        for model, instances_for_fieldvalues in self.field_updates.items():
             query = sql.UpdateQuery(model)
-            for (field, value), instances in six.iteritems(instances_for_fieldvalues):
+            for (field, value), instances in instances_for_fieldvalues.items():
                 query.add_update_values({field.name: value})
                 query.add_q(models.Q(pk__in=[obj.pk for obj in instances]))
                 query_list.append(query.get_compiler(using=self.using).as_sql())
 
         # reverse instance collections
-        for instances in six.itervalues(self.data):
+        for instances in self.data.values():
             instances.reverse()
 
         # delete instances
-        for model, instances in six.iteritems(self.data):
+        for model, instances in self.data.items():
             query = sql.DeleteQuery(model)
             pk_list = [obj.pk for obj in instances]
             query.where = query.where_class()

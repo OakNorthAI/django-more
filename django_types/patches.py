@@ -4,7 +4,6 @@ from django.db import models
 from django.db.migrations import operations
 from django.db.migrations.state import StateApps as DjangoStateApps
 from django.db.models.fields.related import RelatedField as DjangoRelatedField
-from django.utils import six
 from django.utils.functional import cached_property
 # Project imports
 from patchy import super_patchy
@@ -134,7 +133,7 @@ class MigrationAutodetector:
             ]
             # Depend on all bases
             for base in model_state.bases:
-                if isinstance(base, six.string_types) and "." in base:
+                if isinstance(base, str) and "." in base:
                     base_app_label, base_name = base.split(".", 1)
                     # CHANGED
                     # < dependencies.append((base_app_label, base_name, None, True))
